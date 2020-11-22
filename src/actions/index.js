@@ -22,3 +22,10 @@ export const generateNumber = () => {
         type: 'GENERATE'
     }
 }
+
+export const getContacts = (contacts) => {
+    return {
+        type: 'ADD_CONTACTS',
+        payload: contacts
+    }
+}
