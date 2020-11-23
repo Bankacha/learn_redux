@@ -1,9 +1,21 @@
-const contactsReducer = (state = [], action) => {
-    switch(action.type) {
+const initialState = {
+    data: [],
+    selected: null,
+    filtered: []
+};
+
+const contactsReducer = (state = initialState, action) => {
+    switch (action.type) {
         case "ADD_CONTACTS":
-            return action.payload
-    default:
-        return state
+            return {...state, data: action.payload}
+        case "DELETE_CONTACT":
+            return {...state, data: state.data.filter(c => c.id !== action.payload)}
+        case "SELECT": 
+            return {...state, selected: state.data.find(c=>c.id)}
+        case "FILTER":
+            return {...state, filtered: state.data.filter( c=> c.name.toLowerCase().includes(action.payload.toLowerCase()))}    
+        default:
+            return state
     }
 }
 

@@ -29,3 +29,24 @@ export const getContacts = (contacts) => {
         payload: contacts
     }
 }
+
+export const deleteContact = (id) => {
+    return {
+        type: 'DELETE_CONTACT',
+        payload: id
+    }
+}
+
+export const selectContact = (id) => {
+    return {
+        type: 'SELECT',
+        payload: id
+    }
+}
+
+export const search = (input) => {
+    return {
+        type: "FILTER",
+        payload: input
+    }
+}
