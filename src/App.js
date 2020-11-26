@@ -2,10 +2,10 @@
 import Axios from 'axios';
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement, loggedIn, generateNumber, getContacts, deleteContact, selectContact, search } from './actions/index';
-import { Table, Button, Container, Card, InputGroup } from 'react-bootstrap';
+import { increment, decrement, loggedIn, generateNumber, getContacts, deleteContact, selectContact, search, edit } from './actions/index';
+import { Table, Button, Container, Card, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import Edit from './components/editContact'
 
 function App() {
 
@@ -34,9 +34,14 @@ function App() {
     })
   }
 
-  const data = filtered.length ? filtered : contacts; 
+  const data = filtered.length ? filtered : contacts;
+
+  const openEdit = () => {
+    return <Edit></Edit>
+  }
 
   return (
+
     <Container className="App">
       {/* <button onClick={() => dispatch(decrement())}>-</button>
       <h1>Counter {counter}</h1>
@@ -49,18 +54,20 @@ function App() {
       <input onChange={(event) => dispatch(search(event.target.value))}></input>
       {
         selected ? (
-          <Card style={{ width: '18rem' }}>
+          <Card className="float-right" style={{ width: '18rem' }}>
             <Card.Body>
               <Card.Title></Card.Title>
               <Card.Subtitle className="mb-2 text-muted">{selected.name}</Card.Subtitle>
               <Card.Text>
-                Some quick example text to build on the card title and make up the bulk of
-                the card's content.
+                {selected.number}
               </Card.Text>
-              <Card.Link href="#">Card Link</Card.Link>
+              <Button onClick={() => { dispatch(edit(selected)) } }> Edit </Button>
             </Card.Body>
           </Card>
         ) : ''
+      }
+      {
+        edit ? openEdit() : ''
       }
 
       <Table>
@@ -75,17 +82,17 @@ function App() {
         </thead>
         <tbody>
           {
-              data.map((c, i) => {
-                return (
-                  <tr key={i}>
-                    <td>{c.name}</td>
-                    <td>{c.gender}</td>
-                    <td>{c.number}</td>
-                    <td><Button onClick={() => deleteItem(c.id)}>-</Button></td>
-                    <td><Button onClick={() => dispatch(selectContact(c.id))}>+</Button></td>
-                  </tr>
-                )
-              })
+            data.map((c, i) => {
+              return (
+                <tr key={i}>
+                  <td>{c.name}</td>
+                  <td>{c.gender}</td>
+                  <td>{c.number}</td>
+                  <td><Button onClick={() => deleteItem(c.id)}>-</Button></td>
+                  <td><Button onClick={() => dispatch(selectContact(c.id))}>+</Button></td>
+                </tr>
+              )
+            })
           }
 
         </tbody>

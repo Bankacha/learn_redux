@@ -50,3 +50,9 @@ export const search = (input) => {
         payload: input
     }
 }
+export const edit = (contact) => {
+    return {
+        type: "EDIT",
+        payload: contact
+    }
+}
