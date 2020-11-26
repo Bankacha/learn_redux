@@ -1,27 +1,32 @@
 // import { queryByTestId } from '@testing-library/react';
 import Axios from 'axios';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement, loggedIn, generateNumber, getContacts, deleteContact, selectContact, search, edit } from './actions/index';
-import { Table, Button, Container, Card, Form } from 'react-bootstrap';
+import { getContacts, deleteContact, selectContact, search, edit } from './actions/index';
+import { Table, Button, Container, Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Edit from './components/editContact'
 
 function App() {
 
-  const counter = useSelector(state => state.counter);
-  const isLogged = useSelector(state => state.loggedIn);
+  const [isEdit, setIsEdit] = useState(false);
+
+  // const counter = useSelector(state => state.counter);
+  // const isLogged = useSelector(state => state.loggedIn);
   const dispatch = useDispatch();
-  const generate = useSelector(state => state.generate);
+  // const generate = useSelector(state => state.generate);
 
   const contacts = useSelector(state => state.contacts.data);
-  const selected = useSelector(s => s.contacts.selected)
-  const filtered = useSelector(s => s.contacts.filtered)
+  const selected = useSelector(s => s.contacts.selected);
+  const filtered = useSelector(s => s.contacts.filtered);
 
   const loadContacts = () => {
     Axios.get('https://5f99583350d84900163b8807.mockapi.io/banjex/contacts').then(response => {
       dispatch(getContacts(response.data))
     })
+      .catch((err) => {
+        console.log('Error', err);
+      })
   }
 
   useEffect(() => {
@@ -29,28 +34,25 @@ function App() {
   }, [])
 
   const deleteItem = (id) => {
-    Axios.delete(`https://5f99583350d84900163b8807.mockapi.io/banjex/contacts/${id}`).then(r => {
-      dispatch(deleteContact(id));
-    })
+    Axios.delete(`https://5f99583350d84900163b8807.mockapi.io/banjex/contacts/${id}`)
+      .then(r => {
+        dispatch(deleteContact(id));
+      })
+      .catch((err) => {
+        console.log('Error', err);
+      })
+  }
+
+  const editDone = () => {
+    setIsEdit(false);
+    dispatch(selectContact(null));
   }
 
   const data = filtered.length ? filtered : contacts;
 
-  const openEdit = () => {
-    return <Edit></Edit>
-  }
-
   return (
 
     <Container className="App">
-      {/* <button onClick={() => dispatch(decrement())}>-</button>
-      <h1>Counter {counter}</h1>
-      <button onClick={() => dispatch(increment(3))}>+</button>
-      <button onClick={() => dispatch(loggedIn())}>Log In</button>
-      {isLogged ? <h3>Some info i shouldn't see</h3> : ''}
-      <br></br>
-      <input value={generate}></input>
-      <Button onClick={() => dispatch(generateNumber())}>Generate Number</Button> */}
       <input onChange={(event) => dispatch(search(event.target.value))}></input>
       {
         selected ? (
@@ -61,13 +63,13 @@ function App() {
               <Card.Text>
                 {selected.number}
               </Card.Text>
-              <Button onClick={() => { dispatch(edit(selected)) } }> Edit </Button>
+              <Button onClick={() => setIsEdit(true)}> Edit </Button>
             </Card.Body>
           </Card>
         ) : ''
       }
       {
-        edit ? openEdit() : ''
+        isEdit ? <Edit editDone={editDone}></Edit> : ''
       }
 
       <Table>
